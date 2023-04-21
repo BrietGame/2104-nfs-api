@@ -7,7 +7,7 @@ connection = mysql.createConnection({
     user: 'root',
     password: '',
     port: 3306,
-    database: 'mangas'
+    database: '2104-nfs'
 });
 
 connection.connect((err) => {

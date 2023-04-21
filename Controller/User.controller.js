@@ -1,7 +1,7 @@
-const Mangas = require('../Model/Manga.mysql');
+const User = require('../Model/User.mysql');
 
 exports.showAll = async function(req, res) {
-    await Mangas.showAll(async (err,data) => {
+    await User.showAll(async (err,data) => {
         if (err) {
             res.status(500).send({
                 message: err.message || "Une erreur s'est produite"
@@ -13,7 +13,7 @@ exports.showAll = async function(req, res) {
 }
 
 exports.show = async (req,res) => {
-    await Mangas.show(req.params.id, async (err,data) => {
+    await User.show(req.params.id, async (err,data) => {
         if (err) {
             res.status(500).send({
                 message: err.message || "Une erreur s'est produite"
@@ -25,14 +25,15 @@ exports.show = async (req,res) => {
 }
 
 exports.create = async function(req, res) {
-    const manga = new Mangas({
-        name: req.body.name,
-        author: req.body.author,
-        number: req.body.number,
-        gender: req.body.gender
+    const user = new User({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        password: req.body.password,
+        role: req.body.role
     })
 
-    await Mangas.create(manga, async (err,data) => {
+    await User.create(user, async (err,data) => {
         if (err) {
             res.status(500).send({
                 message: err.message || "Une erreur s'est produite"
@@ -44,14 +45,15 @@ exports.create = async function(req, res) {
 }
 
 exports.update = async function(req, res) {
-    const manga = new Mangas({
-        name: req.body.name,
-        author: req.body.author,
-        number: req.body.number,
-        gender: req.body.gender
+    const user = new User({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        password: req.body.password,
+        role: req.body.role
     })
 
-    await Mangas.update(req.params.id, manga.name, manga.author, manga.number, async (err,data) => {
+    await User.update(req.params.id, user.first_name, user.last_name, user.email, user.password, user.role, async (err,data) => {
         if (err) {
             res.status(500).send({
                 message: err.message || "Une erreur s'est produite"
@@ -63,7 +65,7 @@ exports.update = async function(req, res) {
 }
 
 exports.delete = async function (req,res) {
-    await Mangas.delete(req.params.id, async (err,data) => {
+    await User.delete(req.params.id, async (err,data) => {
         if (err) {
             res.status(500).send({
                 message: err.message || "Une erreur s'est produite"
