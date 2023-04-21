@@ -12,6 +12,7 @@ exports.login = async function(req, res) {
         expiresIn: '3h'
     })
 
+    console.log("token", token)
     // Comparer le password avec celui de la base de données (bcrypt)
     let passwordIsOk;
     await User.getPwd(req.body.email, async (err,data) => {
@@ -29,7 +30,9 @@ exports.login = async function(req, res) {
                         message: err.message || "Une erreur s'est produite"
                     })
                 }
-                res.send(token);
+                res.send({
+                    token: token,
+                });
             })
         } else {
             res.status(401).send({
