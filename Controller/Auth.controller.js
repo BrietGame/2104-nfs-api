@@ -1,4 +1,5 @@
 const User = require('../Model/User.mysql');
+const bcrypt = require('bcrypt');
 const jwt = require('express-jwt');
 const jsonwebtoken = require('jsonwebtoken');
 const {expressjwt} = require("express-jwt");
@@ -10,13 +11,31 @@ exports.login = async function(req, res) {
     }, secret, {
         expiresIn: '3h'
     })
-    await User.login(req.body.email, req.body.password, async (err,data) => {
+
+    // Comparer le password avec celui de la base de données (bcrypt)
+    let passwordIsOk;
+    await User.getPwd(req.body.email, async (err,data) => {
         if (err) {
             res.status(500).send({
                 message: err.message || "Une erreur s'est produite"
             })
         }
-        res.send(token);
+        passwordIsOk = await bcrypt.compare(req.body.password, data.password);
+        console.log("passwordIsOk", passwordIsOk)
+        if (passwordIsOk) {
+            await User.login(req.body.email, req.body.password, async (err,data) => {
+                if (err) {
+                    res.status(500).send({
+                        message: err.message || "Une erreur s'est produite"
+                    })
+                }
+                res.send(token);
+            })
+        } else {
+            res.status(401).send({
+                message: "Accès refusé"
+            })
+        }
     })
 }
 
@@ -28,6 +47,9 @@ exports.register = async function(req, res) {
         password: req.body.password,
         role: req.body.role
     })
+
+    // Crypt password
+    user.password = await bcrypt.hash(user.password, 10);
 
     await User.create(user, async (err,data) => {
         if (err) {

@@ -29,6 +29,16 @@ User.show = (id, result) => {
     })
 }
 
+User.getPwd = (email, result) => {
+    sql.query("SELECT password FROM user WHERE email = ?", email, (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        }
+        result(null, res[0]);
+    })
+}
+
 User.create = (newUser, result) => {
     sql.query("INSERT INTO user SET ?", newUser, (err, res) => {
         if (err) {
